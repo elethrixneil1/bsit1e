@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        
+        .dashboard-card {
+            background-color: #ffffff;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-enter {
+            opacity: 0;
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        
+        .course-item {
+            opacity: 0;
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+        .course-item:nth-child(1) { animation-delay: 0.4s; }
+        .course-item:nth-child(2) { animation-delay: 0.5s; }
+        .course-item:nth-child(3) { animation-delay: 0.6s; }
+        .course-item:nth-child(4) { animation-delay: 0.7s; }
+        .course-item:nth-child(5) { animation-delay: 0.8s; }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+
+<script>
+    (function() {
+        const idleLimit = 5 * 60 * 1000; 
+        let idleTimer;
+
+        function logoutUser() {
+            // alert("You have been idle for 5 minutes. You will be logged out now.");
+            window.location.href = "{{ url_for('logout') }}";
+        }
+
+        function resetTimer() {
+            clearTimeout(idleTimer);
+            idleTimer = setTimeout(logoutUser, idleLimit);
+        }
+
+        window.onload = resetTimer;
+        document.onmousemove = resetTimer;
+        document.onkeypress = resetTimer;
+        document.onclick = resetTimer;
+        document.onscroll = resetTimer;
+    })();
+</script>
+
+    <div class="dashboard-card w-full max-w-5xl mx-auto rounded-xl shadow-xl p-5 sm:p-10 border border-gray-200 animate-enter">
+        
+        <div class="animate-enter delay-1 mb-6">
+            <h1 class="text-2xl sm:text-4xl font-extrabold text-center text-gray-800 mb-2 sm:mb-6">
+                Welcome, <span class="text-indigo-600">{{ name }}</span>!
+            </h1>
+            <p class="text-center text-sm sm:text-lg text-gray-600">
+                You have successfully logged into the Class Portal.
+            </p>
+        </div>
+
+        <div class="animate-enter delay-2 bg-blue-50 border border-blue-200 text-blue-800 p-4 sm:p-6 rounded-lg mb-8">
+            <h2 class="text-lg sm:text-xl font-bold mb-4 border-b border-blue-300 pb-2 flex items-center">
+                <i class='bx bxs-user-detail text-xl sm:text-2xl mr-2'></i> Your Overview
+            </h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-green-500">
+                    <p class="text-xs font-medium text-gray-500 uppercase">Overall GPA</p>
+                    <p class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">{{ gpa | default('N/A') }}</p>
+                </div>
+                
+                <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-yellow-500">
+                    <p class="text-xs font-medium text-gray-500 uppercase">Missing Assignments</p>
+                    <p class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">{{ assignments_due | default('0') }}</p>
+                </div>
+                
+                <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-purple-500">
+                    <p class="text-xs font-medium text-gray-500 uppercase">Enrolled Classes</p>
+                    <p class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">{{ total_classes | default('0') }}</p>
+                </div>
+            </div>
+
+            <div class="mt-4 pt-4 border-t border-blue-200 grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm">
+                {% if role == 'teacher' %}
+                <div class="flex justify-between sm:justify-start items-center">
+                    <span class="font-semibold mr-2">Role:</span>
+                    <span class="font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded text-xs">TEACHER</span>
+                </div>
+                {% endif %}
+                
+                <div class="flex justify-between sm:justify-start items-center">
+                    <span class="font-semibold mr-2">Status:</span>
+                    <span class="text-green-600 font-bold flex items-center">
+                        <i class='bx bx-check-circle mr-1'></i> Active
+                    </span>
+                </div>
+
+                <div class="flex justify-between sm:justify-start items-center">
+                    <span class="font-semibold mr-2">Semester:</span>
+                    <span>{{ semester | default('2nd Semester') }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <hr class="border-gray-100 my-8">
+
+        <h3 class="text-xl font-bold text-gray-700 mb-4 flex items-center animate-enter delay-3">
+            <i class='bx bxs-book-content text-xl mr-2'></i> Current Course Load
+        </h3>
+        
+        <div class="space-y-4 mb-10">
+            {% for class in classes %}
+            <div class="course-item bg-white p-5 rounded-xl shadow-md border border-gray-100 transition duration-300 hover:shadow-lg flex flex-col md:flex-row justify-between md:items-center gap-4">
+                
+                <div class="border-b md:border-b-0 pb-3 md:pb-0 border-gray-100">
+                    <p class="text-lg font-bold text-indigo-600">Class under {{ class.teacher_name }}</p>
+                    <p class="text-sm text-gray-500 flex items-center mt-1">
+                        <i class='bx bxs-user-circle mr-1'></i> Instructor: {{ class.teacher_name }}
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-4 w-full md:w-auto text-center md:text-right">
+                    
+                    <div class="bg-gray-50 md:bg-transparent p-2 md:p-0 rounded-lg">
+                        <p class="text-xs text-gray-500 font-medium uppercase mb-1">Final Grade</p>
+                        <p class="text-xl md:text-2xl font-extrabold 
+                            {% if class.grade == 'N/A' %} text-gray-400 
+                            {% elif class.grade|float <= 3.0 and class.grade|float >= 1.0 %} text-green-600 
+                            {% else %} text-red-600 {% endif %}">
+                            {{ class.grade }}
+                        </p>
+                    </div>
+                    
+                    <div class="bg-gray-50 md:bg-transparent p-2 md:p-0 rounded-lg">
+                        <p class="text-xs text-gray-500 font-medium uppercase mb-1">Attendance</p>
+                        <p class="text-lg md:text-xl font-bold text-blue-600">{{ class.attendance }}</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 md:bg-transparent p-2 md:p-0 rounded-lg">
+                        <p class="text-xs text-gray-500 font-medium uppercase mb-1">Missing</p>
+                        <p class="text-lg md:text-xl font-bold text-red-500">{{ class.assignments_due }}</p>
+                    </div>
+                </div>
+
+            </div>
+            {% else %}
+            <div class="course-item p-6 text-center bg-yellow-50 rounded-lg border border-yellow-100 text-yellow-800">
+                <i class='bx bx-info-circle text-2xl mb-2 block'></i> 
+                <span class="font-semibold">You are not enrolled in any classes yet.</span><br>
+                <span class="text-sm mt-2 block">Ask your teacher to add your ID: <span class="font-mono bg-yellow-200 px-2 rounded font-bold">{{ student_id }}</span></span>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="mt-8 pt-6 border-t border-gray-200 animate-enter" style="animation-delay: 0.9s">
+            <div class="flex flex-col-reverse sm:flex-row justify-between items-center gap-4">
+                
+                <div class="text-center sm:text-left text-sm text-gray-500">
+                    <p>Logged in as <span class="font-semibold text-gray-700">{{ name }}</span></p>
+                </div>
+
+                <div class="flex flex-col w-full sm:w-auto sm:flex-row gap-3">
+                    {% if role == 'teacher' %}
+                    <a href="{{ url_for('teacher_portal') }}" 
+                        class="w-full sm:w-auto px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-sm transition transform hover:scale-105 text-center flex items-center justify-center">
+                        <i class='bx bxs-chalkboard mr-2'></i> Teacher Panel
+                    </a>
+                    {% endif %}
+
+                    <a href="{{ url_for('logout') }}" 
+                        class="w-full sm:w-auto px-6 py-2.5 bg-white border border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700 font-semibold rounded-lg transition duration-200 text-center flex items-center justify-center group">
+                        <i class='bx bx-log-out mr-2 transition group-hover:-translate-x-1'></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>
