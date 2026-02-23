@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Class Portal - Register</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        /* Custom styles for card appearance and font */
+        .register-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        /* Custom font import for a cleaner look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: url('https://placehold.co/1920x1080/007AFF/ffffff?text=E-Learning+Background');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden; /* Prevents scrollbars during animation */
+        }
+
+        /* --- ANIMATION DEFINITIONS --- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Base Animation Class */
+        .animate-enter {
+            opacity: 0; /* Initially hidden */
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Staggered Delays for "Waterfall" Effect */
+        .delay-1 { animation-delay: 0.1s; } /* Title */
+        .delay-2 { animation-delay: 0.2s; } /* Name Input */
+        .delay-3 { animation-delay: 0.3s; } /* ID Input */
+        .delay-4 { animation-delay: 0.4s; } /* Password Input */
+        .delay-5 { animation-delay: 0.5s; } /* Button */
+        .delay-6 { animation-delay: 0.6s; } /* Footer Link */
+
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="wrapper register-card w-full max-w-md mx-auto rounded-xl shadow-2xl p-8 sm:p-10 animate-enter">
+        
+        <form method="POST" class="space-y-6"> 
+            
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-center text-gray-800 mb-8 animate-enter delay-1">
+                Portal Registration
+            </h1>
+            
+            <div class="input-box relative animate-enter delay-2">
+                <input 
+                    type="text" 
+                    name="name" 
+                    placeholder="Full Name" 
+                    required 
+                    class="w-full h-12 bg-gray-50 border border-gray-300 rounded-lg p-3 pr-10 text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                >
+                <i class='bx bx-id-card absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl'></i>
+            </div>
+
+            <div class="input-box relative animate-enter delay-3">
+                <input 
+                    type="text" 
+                    name="student_id" 
+                    placeholder="ID No." 
+                    required 
+                    class="w-full h-12 bg-gray-50 border border-gray-300 rounded-lg p-3 pr-10 text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                >
+                <i class='bx bx-user absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl'></i>
+            </div>
+            
+            <div class="input-box relative animate-enter delay-4">
+                <input 
+                    type="password" 
+                    name="password" 
+                    placeholder="New Password" 
+                    required 
+                    class="w-full h-12 bg-gray-50 border border-gray-300 rounded-lg p-3 pr-10 text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                >
+                <i class='bx bx-lock absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl'></i>
+            </div>
+            <div class="input-box relative">
+    <select name="role" class="w-full h-12 bg-gray-50 border border-gray-300 rounded-lg p-3 pr-10 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 appearance-none">
+        <option value="student">Student</option>
+        <option value="teacher">Teacher</option>
+    </select>
+    <i class='bx bx-briefcase absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-xl pointer-events-none'></i>
+</div>
+            
+            <div class="animate-enter delay-5">
+                <button 
+                    type="submit" 
+                    class="btn w-full h-12 bg-green-500 hover:bg-green-600 text-white font-bold text-lg rounded-lg shadow-md transition duration-200 ease-in-out transform hover:scale-[1.01] active:scale-95 focus:outline-none focus:ring-4 focus:ring-green-300"
+                >
+                    Register
+                </button>
+            </div>
+            
+        </form>
+        
+        <p class="text-center text-sm text-gray-600 mt-6 animate-enter delay-6">
+            Already have an account? 
+            <a href="{{ url_for('login') }}" class="text-blue-600 font-semibold hover:text-blue-800 transition duration-150">
+                Login here
+            </a>
+            
+        </p>
+        
+    </div>
+    
+</body>
+</html>
